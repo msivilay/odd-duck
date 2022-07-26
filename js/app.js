@@ -1,202 +1,113 @@
 'use strict';
 
-//Constructor function for Toy:
+//Constructor function for Product:
 
-function Toy(name, fileExtension = 'jpg') {
+function Product(name, fileExtension = 'jpg') {
   this.name = name;
-  this.src = `${this.name}.${fileExtension}`;
+  this.src = `img/${this.name}.${fileExtension}`;
   this.numClicks = 0;
-  this.numViews = 0; 
+  this.numViews = 0;
 }
 
-render: function (body) {
+Product.prototype = {
+  render: function (section) {
+    let img = document.createElement('img');
+    img.setAttribute('src', this.src);
+    img.setAttribute('data-product-name', this.name);
+    section.appendChild(img);
+  },
+};
 
+function getCandidateProducts() {
+  let candidateProducts = [];
+  let remainingProducts = Array.from(productsArray);
+  for (let i = 0; i < numProductsPerRound; i++) {
+    let chosenIndex = Math.floor(Math.random() * remainingProducts.length);
+    candidateProducts.push(remainingProducts[chosenIndex]);
+    remainingProducts.splice(chosenIndex, 1);
+  }
+  return candidateProducts;
 }
 
+function startRound() {
+  let section = document.getElementById('productOptions');
+  let candidateProducts = getCandidateProducts();
+  for (let i = 0; i < candidateProducts.length; i++) {
+    candidateProducts[i].render(section);
+    candidateProducts[i].numViews++;
+  }
+  section.addEventListener('click', handleSelection);
+  numRoundsShown++;
+}
+
+function endRound() {
+  let section = document.getElementById('productOptions');
+  section.removeEventListener('click', handleSelection);
+  section.replaceChildren();
+}
+
+function handleSelection(event) {
+  let selectedProductName = event.target.getAttribute('data-product-name');
+  for (let i = 0; i < productsArray.length; i++) {
+    if (productsArray[i].name === selectedProductName) {
+      productsArray[i].numClicks++;
+      break;
+    }
+  }
+
+  endRound();
+  if (numRoundsShown < numRoundsPerSession) {
+    startRound();
+  } else {
+    showViewResultsButton();
+  }
+}
+
+function showViewResultsButton() {
+  let button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.textContent = 'View Results';
+  button.addEventListener('click', handleViewResults);
+  let section = document.getElementById('centerSection');
+  section.appendChild(button);
+}
+
+function handleViewResults(event) {
+  let ul = document.querySelector('ul');
+  for (let i = 0; i < productsArray.length; i++) {
+    let li = document.createElement('li');
+    li.textContent = `${productsArray[i].name} had ${productsArray[i].numClicks} vote(s) and was seen ${productsArray[i].numViews} time(s).`;
+    ul.appendChild(li);
+  }
+}
 
 //EXECUTABLE CODE
 
-let toysArray = [
-  new Toy('bag', 'jpg'),
-  new Toy('banana', 'jpg'),
-  new Toy('bathroom', 'jpg'),
-  new Toy('boots', 'jpg'),
-  new Toy('breakfast', 'jpg'),
-  new Toy('bubblegum', 'jpg'),
-  new Toy('chair', 'jpg'),
-  new Toy('cthulhu', 'jpg'),
-  new Toy('dog-duck', 'jpg'),
-  new Toy('dragon', 'jpg'),
-  new Toy('pen', 'jpg'),
-  new Toy('pet-sweep', 'jpg'),
-  new Toy('scissors', 'jpg'),
-  new Toy('shark', 'jpg'),
-  new Toy('sweep', 'png'),
-  new Toy('tauntaun', 'jpg'),
-  new Toy('unicorn', 'jpg'),
-  new Toy('water-can', 'jpg'),
-  new Toy('wine-glass', 'jpg'),
+let productsArray = [
+  new Product('bag', 'jpg'),
+  new Product('banana', 'jpg'),
+  new Product('bathroom', 'jpg'),
+  new Product('boots', 'jpg'),
+  new Product('breakfast', 'jpg'),
+  new Product('bubblegum', 'jpg'),
+  new Product('chair', 'jpg'),
+  new Product('cthulhu', 'jpg'),
+  new Product('dog-duck', 'jpg'),
+  new Product('dragon', 'jpg'),
+  new Product('pen', 'jpg'),
+  new Product('pet-sweep', 'jpg'),
+  new Product('scissors', 'jpg'),
+  new Product('shark', 'jpg'),
+  new Product('sweep', 'png'),
+  new Product('tauntaun', 'jpg'),
+  new Product('unicorn', 'jpg'),
+  new Product('water-can', 'jpg'),
+  new Product('wine-glass', 'jpg'),
 ];
 
+let numProductsPerRound = 3;
+let numRoundsPerSession = 5;
 
-// method function to render
+let numRoundsShown = 0;
 
-// .render 
-// maybe check in here for not showing same photo twice
-
-// there is no potential for users to add additional goats in this lab... so normally using its index could lead you to trouble iwht reordered array, but not in this case
-
-// need to randomly generate photos of goats
-// randomly generate a number
-
-// today: dont have same goat twie
-// tomorrow: dont have same goat show up again in next round
-
-// event listener for 
-// goat click needs to rerender and increment the vote
-
-// once we hit 15 rounds, something gets triggered, to display results. so a for loop or function for this.
-
-// section img:hover{
-// border: 5px solid rgb(# # #);
-// cursor: pointer;
-
-// layout shift (link "bounces" looks like, and it could break our layout and be bad looking) Can get around it by this little trick. 
-
-// In section img: just make it transparent instead of color. it's a good way to avoid layout shift.
-
-
-
-// pointer-events: none;
-
-// section + div.clicks-allowed {
-// 	pointer-events: auto;
-// 	cursor: pointer;
-// 	background-color: rosybrown;
-// 	color: white;
-// }
-// section + div.clicks-allowed.hover {
-// 	background-color: green;
-// }
-
-// Need a window into the DOM,
-
-// use the container of the two pictures.
-// (I can use event bubbling, to listen to the entire container and listen to events in the whole section.)
-
-// These are my global variables:
-
-// let myContainer = document.querySelector('section');
-
-// let myButton = document.querySelector('section + div');
-
-// "section + div means ...to a div, find an immediate siblin that was a section
-
-// let image1 =  document.querySelector('section img:first-child');
-
-// let image2 = document.querySelector('section img:nth-child(2);
-
-
-// this replaces the img src so leave two empty <img> tags and lets dom create the html of above to fill in src for photos
-
-// let allGoats=[];
-// let clicks = 0;
-// let clicksAllowed = 15;
-
-
-
-// EXECUTABLE CODE below:
-// ---
-
-// image1.src = allGoats[0].src;
-// image2.src = allGoats[1].src;
-
-
-// how to generate a dynamic number of goats. make and call a function:
-
-// function getRandomGoat();
-// I want a value between two numbers like 0-6.
-
-// return Math.floor(random() * allGoats.length);
-// }
-
-// function renderGoats() {
-// let goat1 = getRandomGoat();
-// let goat2 = get RandomGoat(); 
-
-// ** Using includes() Method: If array contains an object/element can be determined by using includes() method. This method returns true if the array contains the object/element else return false.Jul 20, 2021
-
-// How to check if an array includes an object in JavaScript?https://www.geeksforgeeks.org › how-to-check-if-an-arra...
-// About featured snippets
-// •
-// Feedback
-// People also ask
-// How do you check if an array contains an item?
-// The simplest and fastest way to check if an item is present in an array is by using the Array. indexOf() method. This method searches the array for the given item and returns its index. If no item is found, it returns -1.May 25, 2020
-// **
-
-	
-// while (goat1 === goat 2){
-// goat 2 = getRandomGoat();
-
-// 	image1.src = allGoats[goat1].src;
-// 	image2.src = allGoats[goat2].src;
-// image1.alt= allGoats [goat1].name;
-// image2.alt = allGoats [goat2].name;
-
-// allGoats[goat1].views++;
-// allGoats[goat2].views++;
-
-// -----
-
-// Add event listener:
-// in executeable function
-
-// myContainer.addEventListener('click', handleGoatClick);
-
-// function handleGoatClick(event)	{
-// if (event.target === myContainer){	
-// 	alert('Please click on an image');
-// 	}
-	
-// 	clicks++;
-// 	let clickedGoat = event.target.alt;
-// 	console.log(clickedGoat); It's letting me know which goat I clicked on by the alt name of the image.
-	
-// 	for (let i=0; i< allgoats.length, i++){
-// 		if {clickedGoat === allGoats[i].name {
-// 		allGoats[i[.clicks++;
-// 		break;
-// 		}
-// 		}
-// 		}	
-		
-// tomorrow: make sure goat of previous round doesn't show up in next round
-
-// renderGoats();
-//   if {clicks === clickAllowed}
-//     make voting stop, by removing event listener
-//     myContainer.removeEventListener('click', handleGoatClick); 
-//     myButton.addEventListener('click', handleButtonClick);
-//     myButton.className = 'clicks-allowed';
-    
-    
-    
-//     function handleButtonClick(event) {
-//     if (clicks === clicksAllowed}
-// 	renderResults();
-// 	}}    
-    
-//     function renderResults(){
-//       let ul = document.querySelector ('ul');
-//      //for each goat in my array, generate an li that will say this: "name had x number of views and was clicked on x times"
-     
-//      for (let i=0; i <allGoats.length; i++){
-     
-//      let li = document.CreateElement('li');
-//      li.textContent = `${allGoats[i].name} had ${allGoats[i].views} number of views and was clicked on {allGoats[i].clicks} times`;
-//      ul.appendChild(li);
-
-
-// You should only need for one event listener for product voting.     
-     
+startRound();
