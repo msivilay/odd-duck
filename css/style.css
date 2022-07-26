@@ -28,12 +28,25 @@ main {
 
 aside {
   background-color: rgb(70, 6, 6);
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end:4;
 }
 
+aside legend {
+  font-size: larger;
+  padding-bottom: 1rem;
+}
+
+aside li {
+  padding-bottom: 1rem;
+}
 #productOptions {
   display: flex;
   column-gap: 20px;
   row-gap: 20px;  
+  padding-left: 1rem;
 }
 
 #productOptions img {
@@ -41,6 +54,7 @@ aside {
   width:auto;
   height: auto;
   object-fit: cover;
+  padding-top: 5px;
 }
 
 article {
@@ -48,4 +62,14 @@ article {
   grid-column-end:5;
   grid-row-start:3;
   grid-row-end: 4;
+  padding-left: 1rem;
+}
+
+button {
+  margin-top: 1rem;
+}
+
+footer {
+  padding: 1rem;
+  color: black;
 }
