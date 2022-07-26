@@ -106,7 +106,7 @@ let productsArray = [
 ];
 
 let numProductsPerRound = 3;
-let numRoundsPerSession = 5;
+let numRoundsPerSession = 25;
 
 let numRoundsShown = 0;
 
