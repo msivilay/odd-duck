@@ -1,5 +1,6 @@
 body {
   background-color: bisque;
+  color: white;
 }
 
 header {
@@ -7,11 +8,13 @@ header {
   align-items: center;
   padding-inline-start: 1rem;
   padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 h1 {
-  color:blue;
+  color:brown;
   font-size: x-large;
+  font-family: Arial, Helvetica, sans-serif;
   padding-left: 2rem;
 }
 
@@ -19,8 +22,30 @@ main {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;	
   grid-template-rows: 50% 10% 40%;
+  
+  background-color: brown;
+}
+
+aside {
+  background-color: rgb(70, 6, 6);
+}
+
+#productOptions {
+  display: flex;
   column-gap: 20px;
   row-gap: 20px;  
 }
 
-  
+#productOptions img {
+  border-radius: 25px;
+  width:auto;
+  height: auto;
+  object-fit: cover;
+}
+
+article {
+  grid-column-start:2;
+  grid-column-end:5;
+  grid-row-start:3;
+  grid-row-end: 4;
+}
