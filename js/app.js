@@ -71,15 +71,6 @@ function handleSelection(event) {
   }
 }
 
-// function showViewResultsButton() {
-//   let button = document.createElement('button');
-//   button.setAttribute('type', 'button');
-//   button.textContent = 'View Results';
-//   button.addEventListener('click', handleViewResults);
-//   let section = document.getElementById('centerSection');
-//   section.appendChild(button);
-// }
-
 function handleViewResults() {
   let ul = document.querySelector('ul');
   for (let i = 0; i < productsArray.length; i++) {
@@ -87,6 +78,95 @@ function handleViewResults() {
     li.textContent = `${productsArray[i].name} had ${productsArray[i].numClicks} vote(s) and was seen ${productsArray[i].numViews} time(s).`;
     ul.appendChild(li);
   }
+
+  let labels = [];
+  let numClicks = [];
+  let numViews = [];
+  let percentClicked = [];
+  for (let i = 0; i < productsArray.length; i++) {
+    labels[i] = productsArray[i].name;
+    numClicks[i] = productsArray[i].numClicks;
+    numViews[i] = productsArray[i].numViews;
+    if (productsArray[i].numViews === 0) {
+      percentClicked[i] = 0;
+    } else {
+      percentClicked[i] = Math.round(productsArray[i].numClicks * 1000 / productsArray[i].numViews) / 10;
+    }
+  }
+
+  let chartConfig = {
+    type: 'bar',
+    options: {
+      interaction: {
+        mode: 'index',
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Number of Clicks (Votes) and Views, per Product',
+          font: {
+            size: 16,
+          },
+        },
+        tooltip: {
+          boxPadding: 2,
+          position: 'nearest',
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Product',
+            font: {
+              weight: 'bold',
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Number of Clicks/Views',
+            font: {
+              weight: 'bold',
+            },
+          },
+        },
+      },
+    },
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Clicks',
+          data: numClicks,
+          grouped: false,
+          barPercentage: 0.7,
+          backgroundColor: 'rgb(215, 236, 251)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1,
+        },
+        {
+          label: 'Views',
+          data: numViews,
+          grouped: false,
+          barPercentage: 0.95,
+          backgroundColor: 'rgba(139, 0, 139, 0.2)',
+          borderColor: 'rgb(2139, 0, 139)',
+          borderWidth: 1,
+        },
+      ],
+    },
+  };
+
+  let canvas = document.createElement('canvas');
+  let chart = new Chart(canvas, chartConfig);
+
+  let div = document.createElement('div');
+  div.appendChild(canvas);
+
+  let article = document.querySelector('article');
+  article.appendChild(div);
 }
 
 //EXECUTABLE CODE

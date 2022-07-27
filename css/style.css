@@ -66,8 +66,8 @@ article {
   padding-left: 1rem;
 }
 
-button {
-  margin-top: 1rem;
+canvas {
+  background-color: white;
 }
 
 footer {
