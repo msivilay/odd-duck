@@ -21,13 +21,18 @@ Product.prototype = {
 function getCandidateProducts() {
   let candidateProducts = [];
   let remainingProducts = Array.from(productsArray);
-  for (let i = 0; i < numProductsPerRound; i++) {
+  while (candidateProducts.length < numProductsPerRound) {
     let chosenIndex = Math.floor(Math.random() * remainingProducts.length);
-    candidateProducts.push(remainingProducts[chosenIndex]);
+    if (!previousRound.includes(remainingProducts[chosenIndex])) {
+      candidateProducts.push(remainingProducts[chosenIndex]);
+    }
+
     remainingProducts.splice(chosenIndex, 1);
   }
+  previousRound = candidateProducts;
   return candidateProducts;
 }
+
 
 function startRound() {
   let section = document.getElementById('productOptions');
@@ -72,7 +77,7 @@ function showViewResultsButton() {
   section.appendChild(button);
 }
 
-function handleViewResults(event) {
+function handleViewResults() {
   let ul = document.querySelector('ul');
   for (let i = 0; i < productsArray.length; i++) {
     let li = document.createElement('li');
@@ -104,6 +109,8 @@ let productsArray = [
   new Product('water-can', 'jpg'),
   new Product('wine-glass', 'jpg'),
 ];
+
+let previousRound = [];
 
 let numProductsPerRound = 3;
 let numRoundsPerSession = 25;
