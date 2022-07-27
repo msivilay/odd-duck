@@ -166,7 +166,12 @@ function handleViewResults() {
   div.appendChild(canvas);
 
   let article = document.querySelector('article');
-  article.appendChild(div);
+  article.replaceChildren(div);
+
+  let section = document.getElementById('productOptions');
+  let p = document.createElement('p');
+  p.textContent='Thank you for your input. Results shown below.';
+  section.replaceChildren(p);
 }
 
 //EXECUTABLE CODE
