@@ -26,13 +26,11 @@ function getCandidateProducts() {
     if (!previousRound.includes(remainingProducts[chosenIndex])) {
       candidateProducts.push(remainingProducts[chosenIndex]);
     }
-
     remainingProducts.splice(chosenIndex, 1);
   }
   previousRound = candidateProducts;
   return candidateProducts;
 }
-
 
 function startRound() {
   let section = document.getElementById('productOptions');
@@ -52,6 +50,11 @@ function endRound() {
 }
 
 function handleSelection(event) {
+  if (!event.target.hasAttribute('data-product-name')) {
+    alert('Invalid selection. Please click on a product image.');
+    return;
+  }
+
   let selectedProductName = event.target.getAttribute('data-product-name');
   for (let i = 0; i < productsArray.length; i++) {
     if (productsArray[i].name === selectedProductName) {
