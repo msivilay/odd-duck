@@ -21,11 +21,14 @@ Product.prototype = {
 function getCandidateProducts() {
   let candidateProducts = [];
   let remainingProducts = Array.from(productsArray);
-  for (let i = 0; i < numProductsPerRound; i++) {
+  while (candidateProducts.length < numProductsPerRound) {
     let chosenIndex = Math.floor(Math.random() * remainingProducts.length);
-    candidateProducts.push(remainingProducts[chosenIndex]);
+    if (!previousRound.includes(remainingProducts[chosenIndex])) {
+      candidateProducts.push(remainingProducts[chosenIndex]);
+    }
     remainingProducts.splice(chosenIndex, 1);
   }
+  previousRound = candidateProducts;
   return candidateProducts;
 }
 
@@ -47,6 +50,11 @@ function endRound() {
 }
 
 function handleSelection(event) {
+  if (!event.target.hasAttribute('data-product-name')) {
+    alert('Invalid selection. Please click on a product image.');
+    return;
+  }
+
   let selectedProductName = event.target.getAttribute('data-product-name');
   for (let i = 0; i < productsArray.length; i++) {
     if (productsArray[i].name === selectedProductName) {
@@ -59,26 +67,111 @@ function handleSelection(event) {
   if (numRoundsShown < numRoundsPerSession) {
     startRound();
   } else {
-    showViewResultsButton();
+    handleViewResults();
   }
 }
 
-function showViewResultsButton() {
-  let button = document.createElement('button');
-  button.setAttribute('type', 'button');
-  button.textContent = 'View Results';
-  button.addEventListener('click', handleViewResults);
-  let section = document.getElementById('centerSection');
-  section.appendChild(button);
-}
-
-function handleViewResults(event) {
+function handleViewResults() {
   let ul = document.querySelector('ul');
   for (let i = 0; i < productsArray.length; i++) {
     let li = document.createElement('li');
     li.textContent = `${productsArray[i].name} had ${productsArray[i].numClicks} vote(s) and was seen ${productsArray[i].numViews} time(s).`;
     ul.appendChild(li);
   }
+
+  let labels = [];
+  let numClicks = [];
+  let numViews = [];
+  let percentClicked = [];
+  for (let i = 0; i < productsArray.length; i++) {
+    labels[i] = productsArray[i].name;
+    numClicks[i] = productsArray[i].numClicks;
+    numViews[i] = productsArray[i].numViews;
+    if (productsArray[i].numViews === 0) {
+      percentClicked[i] = 0;
+    } else {
+      percentClicked[i] = Math.round(productsArray[i].numClicks * 1000 / productsArray[i].numViews) / 10;
+    }
+  }
+
+  let chartConfig = {
+    type: 'bar',
+    options: {
+      interaction: {
+        mode: 'index',
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Number of Clicks (Votes) and Views, per Product',
+          font: {
+            size: 16,
+          },
+        },
+        tooltip: {
+          boxPadding: 2,
+          position: 'nearest',
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Product',
+            font: {
+              weight: 'bold',
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Number of Clicks/Views',
+            font: {
+              weight: 'bold',
+            },
+          },
+        },
+      },
+    },
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Clicks',
+          data: numClicks,
+          grouped: false,
+          barPercentage: 0.7,
+          backgroundColor: 'rgb(215, 236, 251)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1,
+        },
+        {
+          label: 'Views',
+          data: numViews,
+          grouped: false,
+          barPercentage: 0.95,
+          backgroundColor: 'rgba(139, 0, 139, 1.0)',
+          borderColor: 'rgb(139, 0, 139)',
+          borderWidth: 1,
+        },
+      ],
+    },
+  };
+
+  let canvas = document.createElement('canvas');
+  let chart = new Chart(canvas, chartConfig);
+
+  let div = document.createElement('div');
+  div.appendChild(canvas);
+
+  let article = document.querySelector('article');
+  article.replaceChildren(div);
+
+  let section = document.getElementById('productOptions');
+  let p = document.createElement('p');
+  p.textContent='Thank you for your input. Results shown below.';
+  section.replaceChildren(p);
 }
 
 //EXECUTABLE CODE
@@ -104,6 +197,8 @@ let productsArray = [
   new Product('water-can', 'jpg'),
   new Product('wine-glass', 'jpg'),
 ];
+
+let previousRound = [];
 
 let numProductsPerRound = 3;
 let numRoundsPerSession = 25;
