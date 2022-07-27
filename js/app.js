@@ -64,18 +64,18 @@ function handleSelection(event) {
   if (numRoundsShown < numRoundsPerSession) {
     startRound();
   } else {
-    showViewResultsButton();
+    handleViewResults();
   }
 }
 
-function showViewResultsButton() {
-  let button = document.createElement('button');
-  button.setAttribute('type', 'button');
-  button.textContent = 'View Results';
-  button.addEventListener('click', handleViewResults);
-  let section = document.getElementById('centerSection');
-  section.appendChild(button);
-}
+// function showViewResultsButton() {
+//   let button = document.createElement('button');
+//   button.setAttribute('type', 'button');
+//   button.textContent = 'View Results';
+//   button.addEventListener('click', handleViewResults);
+//   let section = document.getElementById('centerSection');
+//   section.appendChild(button);
+// }
 
 function handleViewResults() {
   let ul = document.querySelector('ul');

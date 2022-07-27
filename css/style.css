@@ -41,6 +41,7 @@ aside legend {
 
 aside li {
   padding-bottom: 1rem;
+  padding-left: 1rem;
 }
 #productOptions {
   display: flex;
