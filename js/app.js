@@ -33,6 +33,7 @@ function startRound() {
     img.setAttribute('data-product-name', candidateProducts[i].name);
     section.appendChild(img);
     candidateProducts[i].numViews++;
+    saveToLocalStorage();
   }
   section.addEventListener('click', handleSelection);
   numRoundsShown++;
@@ -54,6 +55,7 @@ function handleSelection(event) {
   for (let i = 0; i < productsArray.length; i++) {
     if (productsArray[i].name === selectedProductName) {
       productsArray[i].numClicks++;
+      saveToLocalStorage();
       break;
     }
   }
@@ -165,8 +167,21 @@ function handleViewResults() {
 
   let section = document.getElementById('productOptions');
   let p = document.createElement('p');
-  p.textContent='Thank you for your input. Results shown below.';
+  p.textContent = 'Thank you for your input. Results shown below.';
   section.replaceChildren(p);
+}
+
+
+function saveToLocalStorage() {
+  let productsArrayJSON = JSON.stringify(productsArray);
+  window.localStorage.setItem('productsArrayString', productsArrayJSON);
+}
+
+function loadFromLocalStorage() {
+  let productsArrayValue = window.localStorage.getItem('productsArrayString');
+  if (productsArrayValue !== null) {
+    productsArray = JSON.parse(productsArrayValue);
+  }
 }
 
 //EXECUTABLE CODE
@@ -200,4 +215,5 @@ let numRoundsPerSession = 25;
 
 let numRoundsShown = 0;
 
+loadFromLocalStorage();
 startRound();
