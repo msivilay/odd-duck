@@ -9,14 +9,6 @@ function Product(name, fileExtension = 'jpg') {
   this.numViews = 0;
 }
 
-Product.prototype = {
-  render: function (section) {
-    let img = document.createElement('img');
-    img.setAttribute('src', this.src);
-    img.setAttribute('data-product-name', this.name);
-    section.appendChild(img);
-  },
-};
 
 function getCandidateProducts() {
   let candidateProducts = [];
@@ -36,7 +28,10 @@ function startRound() {
   let section = document.getElementById('productOptions');
   let candidateProducts = getCandidateProducts();
   for (let i = 0; i < candidateProducts.length; i++) {
-    candidateProducts[i].render(section);
+    let img = document.createElement('img');
+    img.setAttribute('src', candidateProducts[i].src);
+    img.setAttribute('data-product-name', candidateProducts[i].name);
+    section.appendChild(img);
     candidateProducts[i].numViews++;
   }
   section.addEventListener('click', handleSelection);
